@@ -1,0 +1,100 @@
+﻿@page
+@using Microsoft.CodeAnalysis
+@using System.IO
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="containerImg">
+    <div id="mainImg" class="main-img">
+        <img id="current" src="~/images/img1.jpg">
+        <a role="button" class="nvgt" id="prev" onclick="i_slide(-1)">
+            <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a role="button" class="nvgt" id="next" onclick="i_slide(1)">
+            <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+        </a>
+    </div>
+    <div id="imgs" class="imgs">
+        <img src="~/images/img1.jpg">
+        <img src="~/images/img2.jpg">
+        <img src="~/images/img3.jpg">
+        <img src="~/images/img4.jpg">
+        <img src="~/images/img5.jpg">
+        <img src="~/images/img6.jpg">
+        <img src="~/images/img7.jpg">
+        <img src="~/images/img8.jpg">
+        <img src="~/images/img9.jpg">
+        <img src="~/images/img10.jpg">
+
+    </div>
+
+</div>
+<link href="~/css/Gallery.css" rel="stylesheet" />
+<link href="~/css/lightslider.min.css" rel="stylesheet" />
+
+@section Scripts{ 
+    <script src="~/js/lightslider.min.js"></script>
+    <script>
+        var current = document.querySelector('#current');
+        var imgs = document.querySelectorAll('.imgs img');
+        var opacity = 0.6;
+        var numImages = imgs.length-1;
+        var curImage = 0;
+        var lastImage;
+        imgs[0].style.opacity = opacity;
+        imgs.forEach(img => img.addEventListener('click', imgClick));
+        var slider;
+
+        $(document).ready(function () {
+            var imgShow = 8;
+            if (window.innerWidth < 760) {
+                imgShow = 4;
+            }
+            else if (window.innerWidth < 380) {
+                imgShow = 2;
+            }
+
+            slider = $("#imgs").lightSlider({
+                autoWidth: false,
+                item: imgShow
+            });
+
+        });
+
+        function i_slide(xflip) {
+            lastImage = curImage;
+            curImage = curImage + xflip;
+            if (curImage > numImages) { curImage = 0; }
+            if (curImage == -1) { curImage = numImages; }
+            current.src = imgs[curImage].src;
+            imgsOpacity(curImage, lastImage);
+        }
+        function imgsOpacity(curImg, laImg) {
+            imgs[laImg].style.opacity = 1;
+            imgs[curImg].style.opacity = opacity;
+            current.classList.add('fade-in');
+            setTimeout(() => current.classList.remove('fade-in'), 500);
+            slider.goToSlide(curImg);
+
+
+        }
+        function imgClick(e) {
+            var selected = Array.from(imgs).indexOf(e.target);
+            lastImage = curImage;
+            current.src = imgs[selected].src;
+            curImage = selected;
+            imgsOpacity(selected, lastImage);
+
+
+        }
+
+
+
+    </script>
+}
+
+
